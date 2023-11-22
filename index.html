@@ -70,7 +70,7 @@ clevertap.privacy.push({useIP: true});
             "MSG-whatsapp": true,              // Enable WhatsApp notifications
           }
         })
-        document.getElementById("divOnuserlogin").innerHTML = "OnUserLogin Called";
+        document.getElementById("divOnuserlogin").value = "OnUserLogin Called";
       }
       function pushProfile() {
         var userType = document.getElementById("etuserproperty").value;
@@ -113,7 +113,7 @@ clevertap.privacy.push({useIP: true});
         clevertap.event.push("Engagement Event", {
           "Channel": "Web Native Display"
         });
-        document.getElementById("divBannerNativeDisplay").innerHTML = "Banner Web Native Display Called";
+        document.getElementById("divBannerNativeDisplay").value = "Banner Web Native Display Called";
       }
       function carousalNativeDisplay() {
         clevertap.event.push("Engagement Event", {
