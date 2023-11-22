@@ -39,9 +39,9 @@ clevertap.privacy.push({useIP: true});
   <div id="divWebInbox"><br><br>
   <span id="inbox">Inbox</span> <br><br>
 	<button id="btnBannerWebNativeDisplay" onclick="bannerNativeDisplay()">Banner Web Native Display</button><br><br>
-  <div id="divBannerNativeDisplay"><br>
+  <span id="divBannerNativeDisplay"><br>
 	<button id="btnCarousalWebNativeDisplay" onclick="carousalNativeDisplay()">Carousal Web Native Display</button><br><br>
-  <div id="divCarousalWebNativeDisplay"><br>
+  <span id="divCarousalWebNativeDisplay"><br>
 	<button id="btnCustomWebNativeDisplay" onclick="customNativeDisplay()">Custom Web Native Display</button><br><br>
   <div id="divCustomWebNativeDisplay"><br><br><br><br>
   <div id="native-display-container" class="native-display-container">
@@ -113,7 +113,7 @@ clevertap.privacy.push({useIP: true});
         clevertap.event.push("Engagement Event", {
           "Channel": "Web Native Display"
         });
-        document.getElementById("divBannerNativeDisplay").value = "Banner Web Native Display Called";
+        document.getElementById("divBannerNativeDisplay").innerHTML = "Banner Web Native Display Called";
       }
       function carousalNativeDisplay() {
         clevertap.event.push("Engagement Event", {
