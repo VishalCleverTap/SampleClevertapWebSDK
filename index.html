@@ -23,35 +23,27 @@ clevertap.privacy.push({useIP: true});
 	<label>Enter Email: </label><input type="text" id="etEmail"><br><br>
 	<label>Enter Phone: </label><input type="text" id="etPhone"><br><br>
 	<button id="btnOnuserlogin" onclick="onUserLogin()">OnUserLogin</button><br><br>
-  <div id="divOnuserlogin"><br>
+  <label id="divOnuserlogin">OnUserLogin Called</label><br>
 	<label>Enter User Type: </label><input type="text" id="etuserproperty"><br><br>
 	<button id="btnPushProfile" onclick="pushProfile()">Profile Push</button><br><br>
-  <div id="divPushProfile"><br>
+  <label id="divPushProfile">Profile Push Called</label><br>
 	<button id="btnPushEvent" onclick="pushEvent()">Push Event</button><br><br>
-  <div id="divPushEvent"><br>
+  <label id="divPushEvent">Product Viewed Called</label><br>  
 	<button id="btnWebPush" onclick="webPush()">Web Push</button><br><br>
-  <div id="divWebPush"><br>
+  <label id="divWebPush">Web Push Called</label><br>
 	<button id="btnWebPopUp" onclick="webPopUp()">Web Pop Up</button><br><br>
-  <div id="divWebPopUp"><br>
+  <label id="divWebPopUp">Web PopUp Called</label><br>
 	<button id="btnWebExitIntent" onclick="webExitIntent()">Web Exit Intent</button><br><br>
-  <div id="divWebExitIntent"><br>
+  <label id="divWebExitIntent">Web Exit Intent</label><br>
   <button id="btnWebInbox" >Web Inbox</button><br><br>
-  <div id="divWebInbox"><br><br>
+  <label id="divWebInbox" hidden="hidden">Web Inbox Called</label><br>
   <span id="inbox">Inbox</span> <br><br>
 	<button id="btnBannerWebNativeDisplay" onclick="bannerNativeDisplay()">Banner Web Native Display</button>
-  <script>
-    function bannerNativeDisplay() {
-        clevertap.event.push("Engagement Event", {
-          "Channel": "Web Native Display"
-        });
-        document.getElementById("divBannerNativeDisplay").innerHTML = "Banner Web Native Display Called <br>";
-      }
-  </script>
-  <div id="divBannerNativeDisplay">
+  <label id="divBannerNativeDisplay">Banner Web Native Display Called</label><br>
 	<button id="btnCarousalWebNativeDisplay" onclick="carousalNativeDisplay()">Carousal Web Native Display</button><br><br>
-  <div id="divCarousalWebNativeDisplay"><br>
+  <label id="divCarousalWebNativeDisplay">Carousel Web Native Display Called</label><br>
 	<button id="btnCustomWebNativeDisplay" onclick="customNativeDisplay()">Custom Web Native Display</button><br><br>
-  <div id="divCustomWebNativeDisplay"><br><br><br><br>
+  <label id="divCustomWebNativeDisplay">Custom Web Native Display Called</label><br><br><br><br>
   <div id="native-display-container" class="native-display-container">
       <img class="img-native-display" src="https://static.vecteezy.com/system/resources/thumbnails/002/380/002/small/diagonal-abstract-banner-with-blue-and-purple-template-free-vector.jpg"/>
   </div>
@@ -117,12 +109,19 @@ clevertap.privacy.push({useIP: true});
         });
         document.getElementById("divWebExitIntent").innerHTML = "Web Exit Intent Called";
       }
-      /*function bannerNativeDisplay() {
+      function webInbox() {
+        /*clevertap.event.push("Engagement Event", {
+          "Channel": "Web Pop-Up"
+        });*/
+        document.getElementById("divWebInbox").removeAttribute("hidden");
+      }
+
+      function bannerNativeDisplay() {
         clevertap.event.push("Engagement Event", {
           "Channel": "Web Native Display"
         });
         document.getElementById("divBannerNativeDisplay").innerHTML = "Banner Web Native Display Called <br>";
-      }*/
+      }
       function carousalNativeDisplay() {
         clevertap.event.push("Engagement Event", {
           "Channel": "Carousel Web Native Display"
