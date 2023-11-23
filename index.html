@@ -23,27 +23,27 @@ clevertap.privacy.push({useIP: true});
 	<label>Enter Email: </label><input type="text" id="etEmail"><br><br>
 	<label>Enter Phone: </label><input type="text" id="etPhone"><br><br>
 	<button id="btnOnuserlogin" onclick="onUserLogin()">OnUserLogin</button><br><br>
-  <label id="divOnuserlogin">OnUserLogin Called</label><br>
+  <label id="divOnuserlogin" hidden="hidden">OnUserLogin Called</label><br>
 	<label>Enter User Type: </label><input type="text" id="etuserproperty"><br><br>
 	<button id="btnPushProfile" onclick="pushProfile()">Profile Push</button><br><br>
-  <label id="divPushProfile">Profile Push Called</label><br>
+  <label id="divPushProfile" hidden="hidden">Profile Push Called</label><br>
 	<button id="btnPushEvent" onclick="pushEvent()">Push Event</button><br><br>
-  <label id="divPushEvent">Product Viewed Called</label><br>  
+  <label id="divPushEvent" hidden="hidden">Product Viewed Called</label><br>  
 	<button id="btnWebPush" onclick="webPush()">Web Push</button><br><br>
-  <label id="divWebPush">Web Push Called</label><br>
+  <label id="divWebPush" hidden="hidden">Web Push Called</label><br>
 	<button id="btnWebPopUp" onclick="webPopUp()">Web Pop Up</button><br><br>
-  <label id="divWebPopUp">Web PopUp Called</label><br>
+  <label id="divWebPopUp" hidden="hidden">Web PopUp Called</label><br>
 	<button id="btnWebExitIntent" onclick="webExitIntent()">Web Exit Intent</button><br><br>
-  <label id="divWebExitIntent">Web Exit Intent</label><br>
+  <label id="divWebExitIntent" hidden="hidden">Web Exit Intent</label><br>
   <button id="btnWebInbox" onclick="webInbox()">Web Inbox</button><br><br>
   <label id="divWebInbox" hidden="hidden">Web Inbox Called</label><br>
   <span id="inbox">Inbox</span> <br><br>
 	<button id="btnBannerWebNativeDisplay" onclick="bannerNativeDisplay()">Banner Web Native Display</button>
-  <label id="divBannerNativeDisplay">Banner Web Native Display Called</label><br>
+  <label id="divBannerNativeDisplay" hidden="hidden">Banner Web Native Display Called</label><br>
 	<button id="btnCarousalWebNativeDisplay" onclick="carousalNativeDisplay()">Carousal Web Native Display</button><br><br>
-  <label id="divCarousalWebNativeDisplay">Carousel Web Native Display Called</label><br>
+  <label id="divCarousalWebNativeDisplay" hidden="hidden">Carousel Web Native Display Called</label><br>
 	<button id="btnCustomWebNativeDisplay" onclick="customNativeDisplay()">Custom Web Native Display</button><br><br>
-  <label id="divCustomWebNativeDisplay">Custom Web Native Display Called</label><br><br><br><br>
+  <label id="divCustomWebNativeDisplay" hidden="hidden">Custom Web Native Display Called</label><br><br><br><br>
   <div id="native-display-container" class="native-display-container">
       <img class="img-native-display" src="https://static.vecteezy.com/system/resources/thumbnails/002/380/002/small/diagonal-abstract-banner-with-blue-and-purple-template-free-vector.jpg"/>
   </div>
@@ -70,7 +70,7 @@ clevertap.privacy.push({useIP: true});
             "MSG-whatsapp": true,              // Enable WhatsApp notifications
           }
         })
-        document.getElementById("divOnuserlogin").value = "OnUserLogin Called";
+        document.getElementById("divOnuserlogin").removeAttribute("hidden");
       }
       function pushProfile() {
         var userType = document.getElementById("etuserproperty").value;
@@ -80,7 +80,7 @@ clevertap.privacy.push({useIP: true});
             "User Type": userType
           }
         });
-        document.getElementById("divPushProfile").innerHTML = "Profile Push Called";
+        document.getElementById("divPushProfile").removeAttribute("hidden");
       }
       function pushEvent() {
         clevertap.event.push("Product viewed", {
@@ -89,25 +89,25 @@ clevertap.privacy.push({useIP: true});
           "Price": 59.99,
           "Date": new Date()
         });
-        document.getElementById("divPushEvent").innerHTML = "Product Viewed Called";
+        document.getElementById("divPushEvent").removeAttribute("hidden");
       }
       function webPush() {
         clevertap.event.push("Engagement Event", {
           "Channel": "Web Push"
         });
-        document.getElementById("divWebPush").innerHTML = "Web Push Called";
+        document.getElementById("divWebPush").removeAttribute("hidden");
       }
       function webPopUp() {
         clevertap.event.push("Engagement Event", {
           "Channel": "Web Pop-Up"
         });
-        document.getElementById("divWebPopUp").innerHTML = "Web PopUp Called";
+        document.getElementById("divWebPopUp").removeAttribute("hidden");
       }
       function webExitIntent() {
         clevertap.event.push("Engagement Event", {
           "Channel": "Web Exit Intent"
         });
-        document.getElementById("divWebExitIntent").innerHTML = "Web Exit Intent Called";
+        document.getElementById("divWebExitIntent").removeAttribute("hidden");
       }
       function webInbox() {
         /*clevertap.event.push("Engagement Event", {
@@ -120,19 +120,19 @@ clevertap.privacy.push({useIP: true});
         clevertap.event.push("Engagement Event", {
           "Channel": "Web Native Display"
         });
-        document.getElementById("divBannerNativeDisplay").innerHTML = "Banner Web Native Display Called <br>";
+        document.getElementById("divBannerNativeDisplay").removeAttribute("hidden");
       }
       function carousalNativeDisplay() {
         clevertap.event.push("Engagement Event", {
           "Channel": "Carousel Web Native Display"
         });
-        document.getElementById("divCarousalWebNativeDisplay").innerHTML = "Carousel Web Native Display Called";
+        document.getElementById("divCarousalWebNativeDisplay").removeAttribute("hidden");
       }
       function customNativeDisplay() {
         clevertap.event.push("Engagement Event", {
           "Channel": "Custom Web Native Display"
         });
-        document.getElementById("divCustomWebNativeDisplay").innerHTML = "Custom Web Native Display Called";
+        document.getElementById("divCustomWebNativeDisplay").removeAttribute("hidden");
       }
       </script>
 <script src="clevertap_sw.js"></script>
