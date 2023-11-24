@@ -161,14 +161,14 @@ clevertap.dismissSpamControl = true;
         function renderCartDropOffPersonalisationCampaign(data) {
                 const name = data.kv.Name;
                 const product = data.kv.Cart;
-                const containerEl = document.getElementById('container')
-                const userNameEl = document.getElementById('user-name')
-                usernameEl.innerText = name
-                const productNameEl = document.getElementById('product-name')
-                productNameEl.innerText = product 
+                //const containerEl = document.getElementById('container')
+                //const userNameEl = document.getElementById('user-name')
+                document.getElementById('user-name').innerText = name;
+                //const productNameEl = document.getElementById('product-name')
+                document.getElementById('product-name').innerText = product;
                 clevertap.renderNotificationViewed(data);
-                containerEl.addEventListener('click', () => {
-                  clevertap.renderNotificationClicked(data)
+                document.getElementById('container').addEventListener('click', () => {
+                  clevertap.renderNotificationClicked(data);
                 });
             }
       </script>
