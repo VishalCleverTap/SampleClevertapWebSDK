@@ -39,12 +39,23 @@ clevertap.dismissSpamControl = true;
   <button id="btnWebInbox" onclick="webInbox()">Web Inbox</button><br><br>
   <label id="divWebInbox" hidden="hidden">Web Inbox Called</label><br>
   <span id="inbox">Inbox</span> <br><br>
-	<button id="btnBannerWebNativeDisplay" onclick="bannerNativeDisplay()">Banner Web Native Display</button>
+	<button id="btnBannerWebNativeDisplay" onclick="bannerNativeDisplay()">Banner Web Native Display</button><br><br>
   <label id="divBannerNativeDisplay" hidden="hidden">Banner Web Native Display Called</label><br>
 	<button id="btnCarousalWebNativeDisplay" onclick="carousalNativeDisplay()">Carousal Web Native Display</button><br><br>
   <label id="divCarousalWebNativeDisplay" hidden="hidden">Carousel Web Native Display Called</label><br>
 	<button id="btnCustomWebNativeDisplay" onclick="customNativeDisplay()">Custom Web Native Display</button><br><br>
   <label id="divCustomWebNativeDisplay" hidden="hidden">Custom Web Native Display Called</label><br><br><br><br>
+  <div id="container">
+    <div class="close">&times;</div>
+    <img src="https://img.freepik.com/free-photo/young-gowoman-yellow-leather-jacket-copy-space_23-2148674153.jpg?w=2000"/>
+    <div class="message">
+      Hello <span id="user-name">user</span>,
+       <p>Still thinking about the <span id="product-name">item</span> in your cart?</p>
+      <p>We get it - it's fabulous.</p>
+       <p>Use SALE20 and avail 20% off</p>
+      <p>What are you waiting for??</p>
+    </div>
+  </div>
   <div id="web-native-display-container" class="web-native-display-container">
       <img class="img-native-display" src="https://static.vecteezy.com/system/resources/thumbnails/002/380/002/small/diagonal-abstract-banner-with-blue-and-purple-template-free-vector.jpg"/>
   </div>
@@ -111,9 +122,9 @@ clevertap.dismissSpamControl = true;
         document.getElementById("divWebExitIntent").removeAttribute("hidden");
       }
       function webInbox() {
-        /*clevertap.event.push("Engagement Event", {
+        clevertap.event.push("Engagement Event", {
           "Channel": "Web Pop-Up"
-        });*/
+        });
         document.getElementById("divWebInbox").removeAttribute("hidden");
       }
 
@@ -135,6 +146,31 @@ clevertap.dismissSpamControl = true;
         });
         document.getElementById("divCustomWebNativeDisplay").removeAttribute("hidden");
       }
+
+      document.addEventListener("CT_web_native_display", function(event) {
+            const data = event.detail;
+            const topic = data.kv.topic;
+              switch (topic) {
+                case "Cart drop-off": {
+                  renderCartDropOffPersonalisationCampaign(data)
+                  break;
+                }
+              }
+        });
+
+        function renderCartDropOffPersonalisationCampaign(data) {
+                const name = data.kv.Name;
+                const product = data.kv.Cart;
+                const containerEl = document.getElementById('container')
+                const userNameEl = containerEl.getElementById('user-name')
+                usernameEl.innerText = name
+                const productNameEl = containerEl.getElementById('product-name')
+                productNameEl.innerText = product 
+                clevertap.renderNotificationViewed(data);
+                containerEl.addEventListener('click', () => {
+                  clevertap.renderNotificationClicked(data)
+                });
+            }
       </script>
 <script src="clevertap_sw.js"></script>
 <script src="notification_prompt.js"></script>
