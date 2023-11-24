@@ -162,9 +162,9 @@ clevertap.dismissSpamControl = true;
                 const name = data.kv.Name;
                 const product = data.kv.Cart;
                 const containerEl = document.getElementById('container')
-                const userNameEl = containerEl.getElementById('user-name')
+                const userNameEl = document.getElementById('user-name')
                 usernameEl.innerText = name
-                const productNameEl = containerEl.getElementById('product-name')
+                const productNameEl = document.getElementById('product-name')
                 productNameEl.innerText = product 
                 clevertap.renderNotificationViewed(data);
                 containerEl.addEventListener('click', () => {
