@@ -76,7 +76,7 @@ clevertap.dismissSpamControl = true;
             "Gender": "M",                     // Can be either M or F
             "DOB": new Date(),                 // Date of Birth. Date object
           // optional fields. controls whether the user will be sent email, push etc.
-            "MSG-email": false,                // Disable email notifications
+            "MSG-email": true,                // Disable email notifications
             "MSG-push": true,                  // Enable push notifications
             "MSG-sms": true,                   // Enable sms notifications
             "MSG-whatsapp": true,              // Enable WhatsApp notifications
@@ -123,7 +123,7 @@ clevertap.dismissSpamControl = true;
       }
       function webInbox() {
         clevertap.event.push("Engagement Event", {
-          "Channel": "Web Pop-Up"
+          "Channel": "Web Inbox"
         });
         document.getElementById("divWebInbox").removeAttribute("hidden");
       }
@@ -160,7 +160,7 @@ clevertap.dismissSpamControl = true;
 
         function renderCartDropOffPersonalisationCampaign(data) {
                 const name = data.kv.Name;
-                const product = data.kv.Cart;
+                const product = data.kv.Product;
                 //const containerEl = document.getElementById('container')
                 //const userNameEl = document.getElementById('user-name')
                 document.getElementById('user-name').innerText = name;
