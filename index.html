@@ -31,6 +31,8 @@ clevertap.dismissSpamControl = true;
   <label id="divPushProfile" hidden="hidden">Profile Push Called</label><br>
 	<button id="btnPushEvent" onclick="pushEvent()">Push Event</button><br><br>
   <label id="divPushEvent" hidden="hidden">Product Viewed Called</label><br>  
+  <button id="btnWebPushEvent" onclick="webPushEvent()">WebView Push Event</button><br><br>
+  <label id="divWebPushEvent" hidden="hidden">WebView Product Viewed Called</label><br> 
 	<button id="btnWebPush" onclick="webPush()">Web Push</button><br><br>
   <label id="divWebPush" hidden="hidden">Web Push Called</label><br>
 	<button id="btnWebPopUp" onclick="webPopUp()">Web Pop Up</button><br><br>
@@ -104,6 +106,15 @@ clevertap.dismissSpamControl = true;
         });
         document.getElementById("divPushEvent").removeAttribute("hidden");
       }
+
+      function webPushEvent() {
+        if (window.com_example_clevertapexampleapplication) {
+              // Call Android interface             
+              com_example_clevertapexampleapplication.pushEvent("Product Viewed");          
+          }
+        document.getElementById("divWebPushEvent").removeAttribute("hidden");
+      }
+
       function webPush() {
         clevertap.event.push("Engagement Event", {
           "Channel": "Web Push"
