@@ -89,6 +89,7 @@ clevertap.dismissSpamControl = true;
         document.getElementById("divOnuserlogin").removeAttribute("hidden");
       }
       function pushPermission() {
+        console.log("Push Permission Called");
         clevertap.notifications.push({
           "titleText":'Would you like to receive Push Notifications?',
           "bodyText":'We promise to only send you relevant content and give you updates on your transactions',
@@ -197,7 +198,7 @@ clevertap.dismissSpamControl = true;
                 });
             }
       </script>
-<!--<script src="clevertap_sw.js"></script>-->
+<script src="clevertap_sw.js"></script>
 <script src="notification_prompt.js"></script>
 </body>
 </html>
