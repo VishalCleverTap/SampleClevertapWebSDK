@@ -2,7 +2,7 @@
   "applinks": {
       "details": [
            {
-             "appIDs": [ "ABCDE12345.com.example.app", "ABCDE12345.com.example.app2" ],
+             "appIDs": [ "G9355AB4R7.io.github.vishalclevertap" ],
              "components": [
                {
                   "#": "no_universal_links",
@@ -26,13 +26,5 @@
              ]
            }
        ]
-   },
-   "webcredentials": {
-      "apps": [ "ABCDE12345.com.example.app" ]
-   },
-
-
-    "appclips": {
-        "apps": ["ABCDE12345.com.example.MyApp.Clip"]
-    }
+   }
 }
