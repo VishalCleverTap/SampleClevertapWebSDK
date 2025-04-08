@@ -121,10 +121,18 @@ clevertap.dismissSpamControl = true;
       }
 
       function webPushEvent() {
-        if (window.com_example_clevertapexampleapplication) {
+        /*if (window.com_example_clevertapexampleapplication) {
               // Call Android interface             
               com_example_clevertapexampleapplication.pushEvent("Product Viewed");          
-          }
+          }*/
+
+	      var props = {foo: 'xyz', lang: 'French'};
+var message = { action:'recordEventWithProps', event:'Product Viewed', properties: props};
+if(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.com_example_clevertapexampleapplication){
+ // Call iOS interface       
+  window.webkit.messageHandlers.com_example_clevertapexampleapplication.postMessage(message);         
+} 
+	      
         document.getElementById("divWebPushEvent").removeAttribute("hidden");
       }
 
