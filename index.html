@@ -1,5 +1,9 @@
 <!DOCTYPE html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
 <title>Sample CleverTap Website</title>
 <script type="text/javascript">
      var clevertap = {event:[], profile:[], account:[], onUserLogin:[], notifications:[], privacy:[]};
@@ -18,53 +22,608 @@ clevertap.dismissSpamControl = true;
   })();
 </script>
 <!--<link rel="manifest" href="/manifest.json">-->
+<style>
+  /* ---------- Tokens ---------- */
+  :root {
+    --bg: #F3F5F8;
+    --surface: #FFFFFF;
+    --surface-2: #F7F8FA;
+    --ink: #1B2130;
+    --muted: #586274;
+    --line: #DDE2E9;
+    --line-strong: #C3CAD5;
+    --field-border: #848E9F;    /* 3.3:1 on surface, so empty inputs stay visible */
+    --signal: #F28046;          /* brand orange, from the push prompt button */
+    --signal-ink: #B4461A;      /* same hue, dark enough for text and focus rings */
+    --signal-wash: rgba(242, 128, 70, .16);
+    --solid-bg: #1B2130;
+    --solid-bg-hover: #2E3649;
+    --solid-fg: #FFFFFF;
+
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI Variable Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+
+    --r-panel: 14px;
+    --r-control: 8px;
+    --r-chip: 5px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #13161C;
+      --surface: #1B1F27;
+      --surface-2: #222731;
+      --ink: #E7EAF0;
+      --muted: #9CA5B5;
+      --line: #2C323D;
+      --line-strong: #3E4654;
+      --field-border: #687183;
+      --signal-ink: #F7A57E;
+      --signal-wash: rgba(242, 128, 70, .2);
+      --solid-bg: #E7EAF0;
+      --solid-bg-hover: #FFFFFF;
+      --solid-fg: #13161C;
+    }
+  }
+
+  /* ---------- Base ---------- */
+  *, *::before, *::after { box-sizing: border-box; }
+  /* Status labels are revealed by removing [hidden]; never let a display rule override it. */
+  [hidden] { display: none !important; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 400 1rem/1.5 var(--font);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, p { margin: 0; }
+  code { font-family: var(--mono); }
+  :focus-visible { outline: 3px solid var(--signal-ink); outline-offset: 2px; }
+
+  .page {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: clamp(1.25rem, 3vw, 2.5rem) clamp(1rem, 4vw, 2.5rem) 4rem;
+  }
+
+  /* ---------- Masthead ---------- */
+  .masthead {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 1.75rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .masthead h1 {
+    font-size: clamp(1.625rem, 1.05rem + 2.4vw, 2.625rem);
+    line-height: 1.08;
+    letter-spacing: -.028em;
+    font-weight: 700;
+  }
+  .masthead p {
+    margin-top: .625rem;
+    color: var(--muted);
+    max-width: 52ch;
+  }
+  #inbox-icon {
+    position: relative;
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    min-height: 2.75rem;
+    padding: .5rem 1rem .5rem .875rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--ink);
+    font-weight: 600;
+    font-size: .9375rem;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+    transition: border-color .15s ease;
+  }
+  #inbox-icon svg { width: 1.125rem; height: 1.125rem; }
+
+  /* ---------- Sections ---------- */
+  .section { margin-top: 2.75rem; }
+  .section__head { margin-bottom: 1rem; max-width: 62ch; }
+  .section__head h2 {
+    font-size: 1.25rem;
+    line-height: 1.3;
+    letter-spacing: -.012em;
+    font-weight: 650;
+  }
+  .section__head p { margin-top: .25rem; color: var(--muted); font-size: .9375rem; }
+
+  /* ---------- Panels (user section) ---------- */
+  .user-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+    gap: 1rem;
+    align-items: start;
+  }
+  .stack { display: grid; gap: 1rem; }
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-panel);
+    padding: 1.25rem 1.25rem 1.125rem;
+  }
+  .panel__head { display: flex; align-items: center; gap: .625rem; }
+  .panel h3 { font-size: 1rem; line-height: 1.35; font-weight: 650; }
+  .panel__desc { margin-top: .375rem; color: var(--muted); font-size: .9375rem; max-width: 60ch; }
+  .panel__body { margin-top: 1.125rem; }
+  .panel__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .75rem 1rem;
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+  .field label {
+    display: block;
+    margin-bottom: .375rem;
+    font-size: .875rem;
+    font-weight: 600;
+  }
+  .field input {
+    width: 100%;
+    min-height: 2.75rem;
+    padding: .625rem .75rem;
+    font: inherit;
+    font-size: 1rem;              /* 16px stops iOS zooming in on focus */
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--field-border);
+    border-radius: var(--r-control);
+    transition: border-color .15s ease;
+  }
+  .field input::placeholder { color: var(--muted); opacity: .75; }
+  .field input:focus-visible { outline-offset: 1px; border-color: var(--signal-ink); }
+  .hint { margin-top: .3125rem; font-size: .8125rem; color: var(--muted); }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.75rem;
+    padding: .625rem 1.125rem;
+    font: inherit;
+    font-size: .9375rem;
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: center;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-control);
+    cursor: pointer;
+    transition: background-color .15s ease, border-color .15s ease, transform .08s ease;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn--solid { color: var(--solid-fg); background: var(--solid-bg); border-color: var(--solid-bg); }
+  /* Hover only where a pointer can hover, so styles don't stick after a tap on touch screens. */
+  @media (hover: hover) {
+    #inbox-icon:hover { border-color: var(--ink); }
+    .field input:hover { border-color: var(--ink); }
+    .btn:hover { border-color: var(--ink); background: var(--surface-2); }
+    .btn--solid:hover { background: var(--solid-bg-hover); border-color: var(--solid-bg-hover); }
+  }
+
+  /* ---------- Signal lamp + status ---------- */
+  .lamp {
+    flex: none;
+    width: .6875rem;
+    height: .6875rem;
+    border-radius: 50%;
+    border: 1.5px solid var(--line-strong);
+    background: transparent;
+    transition: background-color .2s ease, border-color .2s ease, box-shadow .2s ease;
+  }
+  .trigger:has(.status label:not([hidden])) .lamp,
+  .panel:has(.status label:not([hidden])) .lamp {
+    background: var(--signal);
+    border-color: var(--signal);
+    box-shadow: 0 0 0 4px var(--signal-wash);
+    animation: lamp-on .45s ease-out;
+  }
+  .status {
+    display: flex;
+    align-items: center;
+    min-height: 1.5rem;
+    font-size: .875rem;
+  }
+  .status:has(label[hidden])::before { content: "Not called yet"; color: var(--muted); }
+  .status label { font-weight: 650; color: var(--ink); animation: status-in .25s ease-out; }
+  .status-note { font-size: .875rem; color: var(--muted); }
+
+  @keyframes lamp-on {
+    0%   { box-shadow: 0 0 0 0 rgba(242, 128, 70, .55); }
+    100% { box-shadow: 0 0 0 4px var(--signal-wash); }
+  }
+  @keyframes status-in {
+    from { opacity: 0; transform: translateX(-4px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  /* ---------- Trigger list ---------- */
+  .triggers {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-panel);
+  }
+  .trigger {
+    display: grid;
+    grid-template-columns: auto 16rem minmax(0, 1fr) 17rem;
+    align-items: center;
+    gap: .75rem 1.25rem;
+    padding: 1rem 1.25rem;
+  }
+  .trigger + .trigger { border-top: 1px solid var(--line); }
+  .trigger .btn { width: 100%; }
+  .trigger__detail p { font-size: .9375rem; max-width: 60ch; }
+  .payload {
+    display: inline-block;
+    margin-top: .1875rem;
+    font-size: .8125rem;
+    color: var(--muted);
+    overflow-wrap: anywhere;
+  }
+
+  /* ---------- Native display targets ---------- */
+  .targets {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+    align-items: start;
+  }
+  .target {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-panel);
+    padding: 1.25rem;
+  }
+  .target__head { margin-bottom: 1rem; }
+  .target__head h3 { font-size: 1rem; font-weight: 650; }
+  .target__head p { margin-top: .25rem; font-size: .875rem; color: var(--muted); }
+  .chip {
+    font-size: .8125rem;
+    padding: .0625rem .375rem;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: var(--r-chip);
+    overflow-wrap: anywhere;
+  }
+
+  /* Cart drop-off card (custom key-value campaign) */
+  #container {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    overflow: hidden;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+  }
+  #container > img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 15rem;
+    object-fit: cover;
+    background: var(--line);
+  }
+  #container .message { padding: 1.25rem 3rem 1.25rem 1.25rem; font-size: .9375rem; }
+  #container .greeting {
+    display: block;
+    margin-bottom: .5rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -.012em;
+    line-height: 1.25;
+  }
+  #container .message p { margin-top: .375rem; }
+  #container .coupon {
+    font-family: var(--mono);
+    font-weight: 700;
+    letter-spacing: .03em;
+    padding: .0625rem .375rem;
+    color: var(--signal-ink);
+    border: 1.5px dashed var(--signal-ink);
+    border-radius: var(--r-chip);
+  }
+  #container .close {
+    position: absolute;
+    top: .625rem;
+    right: .625rem;
+    display: grid;
+    place-items: center;
+    width: 1.875rem;
+    height: 1.875rem;
+    font-size: 1.25rem;
+    line-height: 1;
+    color: var(--muted);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 50%;
+  }
+
+  /* Banner / carousel slot. No height is set on purpose: CleverTap sizes
+     banners to 100% width and auto height unless the container has an
+     explicit CSS height. */
+  .web-native-display-container { display: block; width: 100%; }
+  .img-native-display { display: block; width: 100%; height: auto; border-radius: 10px; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 1100px) {
+    .trigger { grid-template-columns: auto 15rem minmax(0, 1fr); align-items: start; }
+    .trigger .lamp { margin-top: 1rem; }
+    .trigger .btn { grid-row: span 2; }
+    .trigger .status { grid-column: 3; }
+  }
+  @media (max-width: 900px) {
+    .user-grid, .targets { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 680px) {
+    .masthead { flex-direction: column-reverse; gap: 1.25rem; }
+    .masthead #inbox-icon { align-self: flex-end; }
+    .fields { grid-template-columns: minmax(0, 1fr); }
+    .trigger { grid-template-columns: auto minmax(0, 1fr); gap: .625rem .875rem; padding: 1rem; }
+    .trigger .lamp { margin-top: 1rem; }
+    .trigger .btn { grid-row: auto; }
+    .trigger__detail, .trigger .status { grid-column: 2; }
+    .panel__foot .btn { flex: 1 1 100%; }
+    #container { grid-template-columns: minmax(0, 1fr); }
+    #container > img { height: auto; min-height: 0; aspect-ratio: 16 / 10; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
 </head>
 <body>
-  <label>Enter Identity: </label><input type="text" id="etIdentity"><br><br>
-	<label>Enter Name: </label><input type="text" id="etName"><br><br>
-	<label>Enter Email: </label><input type="text" id="etEmail"><br><br>
-	<label>Enter Phone: </label><input type="text" id="etPhone"><br><br>
-	<button id="btnOnuserlogin" onclick="onUserLogin()">OnUserLogin</button><br><br>
-  <label id="divOnuserlogin" hidden="hidden">OnUserLogin Called</label><br>
-  <button id="btnPushPermission" onclick="pushPermission()">Push Permission</button><br><br>
-	<label>Enter User Type: </label><input type="text" id="etuserproperty"><br><br>
-	<button id="btnPushProfile" onclick="pushProfile()">Profile Push</button><br><br>
-  <label id="divPushProfile" hidden="hidden">Profile Push Called</label><br>
-	<button id="btnPushEvent" onclick="pushEvent()">Push Event</button><br><br>
-  <label id="divPushEvent" hidden="hidden">Product Viewed Called</label><br>
-  <button id="btnWebPushEvent" onclick="webPushEvent()">WebView Push Event</button><br><br>
-  <label id="divWebPushEvent" hidden="hidden">WebView Product Viewed Called</label><br>
-	<button id="btnWebPush" onclick="webPush()">Web Push</button><br><br>
-  <label id="divWebPush" hidden="hidden">Web Push Called</label><br>
-	<button id="btnWebPopUp" onclick="webPopUp()">Web Pop Up</button><br><br>
-  <label id="divWebPopUp" hidden="hidden">Web PopUp Called</label><br>
-	<button id="btnWebExitIntent" onclick="webExitIntent()">Web Exit Intent</button><br><br>
-  <label id="divWebExitIntent" hidden="hidden">Web Exit Intent</label><br>
-  <button id="btnWebInbox" onclick="webInbox()">Web Inbox</button><br><br>
-  <label id="divWebInbox" hidden="hidden">Web Inbox Called</label><br>
-  <br><span id="inbox-icon" style="position: absolute; top: 30px; right: 40px; width: 100px; text-align:right;">Inbox</span>
-	<button id="btnBannerWebNativeDisplay" onclick="bannerNativeDisplay()">Banner Web Native Display</button><br><br>
-  <label id="divBannerNativeDisplay" hidden="hidden">Banner Web Native Display Called</label><br>
-	<button id="btnCarousalWebNativeDisplay" onclick="carousalNativeDisplay()">Carousal Web Native Display</button><br><br>
-  <label id="divCarousalWebNativeDisplay" hidden="hidden">Carousel Web Native Display Called</label><br>
-	<button id="btnCustomWebNativeDisplay" onclick="customNativeDisplay()">Custom Web Native Display</button><br><br>
-  <label id="divCustomWebNativeDisplay" hidden="hidden">Custom Web Native Display Called</label><br><br><br><br>
-  <div id="container">
-    <div class="close">&times;</div>
-    <img src="https://img.freepik.com/free-photo/young-gowoman-yellow-leather-jacket-copy-space_23-2148674153.jpg"/>
-    <div class="message">
-      Hello <span id="user-name">user</span>,
-       <p>Still thinking about the <span id="product-name">item</span> in your cart?</p>
-      <p>We get it - it's fabulous.</p>
-       <p>Use SALE20 and avail 20% off</p>
-      <p>What are you waiting for??</p>
-    </div>
-  </div>
-  <div id="web-native-display-container" class="web-native-display-container">
-      <img class="img-native-display" src="https://static.vecteezy.com/system/resources/thumbnails/002/380/002/small/diagonal-abstract-banner-with-blue-and-purple-template-free-vector.jpg"/>
-  </div>
+<div class="page">
 
-    <script>
+  <header class="masthead">
+    <div>
+      <h1>Sample CleverTap Website</h1>
+      <p>Trigger CleverTap Web SDK calls and campaigns from one page. Each status stays lit until you reload.</p>
+    </div>
+    <span id="inbox-icon" role="button" tabindex="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>Inbox</span>
+  </header>
+
+  <main>
+
+    <!-- User -->
+    <section class="section" aria-labelledby="sec-user">
+      <div class="section__head">
+        <h2 id="sec-user">User</h2>
+      </div>
+
+      <div class="user-grid">
+        <div class="panel">
+          <div class="panel__head">
+            <span class="lamp" aria-hidden="true"></span>
+            <h3>Log in a user</h3>
+          </div>
+          <p class="panel__desc">Sends these details with onUserLogin, along with Gender &ldquo;M&rdquo; and today&rsquo;s date as DOB.</p>
+          <div class="panel__body fields">
+            <div class="field">
+              <label for="etIdentity">Identity</label>
+              <input type="text" id="etIdentity" placeholder="Customer ID" autocomplete="off" autocapitalize="off" spellcheck="false">
+            </div>
+            <div class="field">
+              <label for="etName">Name</label>
+              <input type="text" id="etName" placeholder="Full name" autocomplete="name">
+            </div>
+            <div class="field">
+              <label for="etEmail">Email</label>
+              <input type="text" id="etEmail" placeholder="name@example.com" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false">
+            </div>
+            <div class="field">
+              <label for="etPhone">Phone</label>
+              <input type="text" id="etPhone" placeholder="+919876543210" inputmode="tel" autocomplete="tel" aria-describedby="hint-phone">
+              <p class="hint" id="hint-phone">Include the country code.</p>
+            </div>
+          </div>
+          <div class="panel__foot">
+            <button type="button" id="btnOnuserlogin" onclick="onUserLogin()" class="btn btn--solid">OnUserLogin</button>
+            <div class="status" aria-live="polite"><label id="divOnuserlogin" hidden="hidden">OnUserLogin Called</label></div>
+          </div>
+        </div>
+
+        <div class="stack">
+          <div class="panel">
+            <div class="panel__head">
+              <span class="lamp" aria-hidden="true"></span>
+              <h3>Set user type</h3>
+            </div>
+            <p class="panel__desc">Updates User Type on the current profile.</p>
+            <div class="panel__body field">
+              <label for="etuserproperty">User type</label>
+              <input type="text" id="etuserproperty" placeholder="e.g. Premium" autocomplete="off">
+            </div>
+            <div class="panel__foot">
+              <button type="button" id="btnPushProfile" onclick="pushProfile()" class="btn btn--solid">Profile Push</button>
+              <div class="status" aria-live="polite"><label id="divPushProfile" hidden="hidden">Profile Push Called</label></div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel__head">
+              <h3>Ask for push permission</h3>
+            </div>
+            <p class="panel__desc">Shows the web push opt-in prompt. Requires HTTPS and clevertap_sw.js alongside this page.</p>
+            <div class="panel__foot">
+              <button type="button" id="btnPushPermission" onclick="pushPermission()" class="btn">Push Permission</button>
+              <p class="status-note">Watch for the prompt; this one has no on-page status.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Events -->
+    <section class="section" aria-labelledby="sec-events">
+      <div class="section__head">
+        <h2 id="sec-events">Events</h2>
+      </div>
+      <ul class="triggers">
+        <li class="trigger">
+          <span class="lamp" aria-hidden="true"></span>
+          <button type="button" id="btnPushEvent" onclick="pushEvent()" class="btn">Push Event</button>
+          <div class="trigger__detail">
+            <p>Records Product viewed for a Casio Chronograph Watch, priced 59.99.</p>
+            <code class="payload">Product viewed</code>
+          </div>
+          <div class="status" aria-live="polite"><label id="divPushEvent" hidden="hidden">Product Viewed Called</label></div>
+        </li>
+        <li class="trigger">
+          <span class="lamp" aria-hidden="true"></span>
+          <button type="button" id="btnWebPushEvent" onclick="webPushEvent()" class="btn">WebView Push Event</button>
+          <div class="trigger__detail">
+            <p>Asks the iOS app hosting this page to record Product Viewed. Has no effect in a regular browser.</p>
+            <code class="payload">recordEventWithProps</code>
+          </div>
+          <div class="status" aria-live="polite"><label id="divWebPushEvent" hidden="hidden">WebView Product Viewed Called</label></div>
+        </li>
+      </ul>
+    </section>
+
+    <!-- Campaign triggers -->
+    <section class="section" aria-labelledby="sec-campaigns">
+      <div class="section__head">
+        <h2 id="sec-campaigns">Campaign triggers</h2>
+        <p>Each button records Engagement Event with its own Channel value. Target that event in a campaign to see it here.</p>
+      </div>
+      <ul class="triggers">
+        <li class="trigger">
+          <span class="lamp" aria-hidden="true"></span>
+          <button type="button" id="btnWebPush" onclick="webPush()" class="btn">Web Push</button>
+          <div class="trigger__detail">
+            <p>For web push notification campaigns.</p>
+            <code class="payload">Channel: "Web Push"</code>
+          </div>
+          <div class="status" aria-live="polite"><label id="divWebPush" hidden="hidden">Web Push Called</label></div>
+        </li>
+        <li class="trigger">
+          <span class="lamp" aria-hidden="true"></span>
+          <button type="button" id="btnWebPopUp" onclick="webPopUp()" class="btn">Web Pop Up</button>
+          <div class="trigger__detail">
+            <p>For web pop-up campaigns.</p>
+            <code class="payload">Channel: "Web Pop-Up"</code>
+          </div>
+          <div class="status" aria-live="polite"><label id="divWebPopUp" hidden="hidden">Web PopUp Called</label></div>
+        </li>
+        <li class="trigger">
+          <span class="lamp" aria-hidden="true"></span>
+          <button type="button" id="btnWebExitIntent" onclick="webExitIntent()" class="btn">Web Exit Intent</button>
+          <div class="trigger__detail">
+            <p>For exit-intent campaigns.</p>
+            <code class="payload">Channel: "Web Exit Intent"</code>
+          </div>
+          <div class="status" aria-live="polite"><label id="divWebExitIntent" hidden="hidden">Web Exit Intent</label></div>
+        </li>
+        <li class="trigger">
+          <span class="lamp" aria-hidden="true"></span>
+          <button type="button" id="btnWebInbox" onclick="webInbox()" class="btn">Web Inbox</button>
+          <div class="trigger__detail">
+            <p>For Web Inbox messages, which open from Inbox at the top of the page. Also asks for your location.</p>
+            <code class="payload">Channel: "Web Inbox"</code>
+          </div>
+          <div class="status" aria-live="polite"><label id="divWebInbox" hidden="hidden">Web Inbox Called</label></div>
+        </li>
+      </ul>
+    </section>
+
+    <!-- Native display -->
+    <section class="section" aria-labelledby="sec-native">
+      <div class="section__head">
+        <h2 id="sec-native">Native display</h2>
+        <p>These record Engagement Event too. Campaigns render into the card and slot below.</p>
+      </div>
+      <ul class="triggers">
+        <li class="trigger">
+          <span class="lamp" aria-hidden="true"></span>
+          <button type="button" id="btnBannerWebNativeDisplay" onclick="bannerNativeDisplay()" class="btn">Banner Web Native Display</button>
+          <div class="trigger__detail">
+            <p>For banner campaigns.</p>
+            <code class="payload">Channel: "Web Native Display"</code>
+          </div>
+          <div class="status" aria-live="polite"><label id="divBannerNativeDisplay" hidden="hidden">Banner Web Native Display Called</label></div>
+        </li>
+        <li class="trigger">
+          <span class="lamp" aria-hidden="true"></span>
+          <button type="button" id="btnCarousalWebNativeDisplay" onclick="carousalNativeDisplay()" class="btn">Carousal Web Native Display</button>
+          <div class="trigger__detail">
+            <p>For carousel campaigns.</p>
+            <code class="payload">Channel: "Carousel Web Native Display"</code>
+          </div>
+          <div class="status" aria-live="polite"><label id="divCarousalWebNativeDisplay" hidden="hidden">Carousel Web Native Display Called</label></div>
+        </li>
+        <li class="trigger">
+          <span class="lamp" aria-hidden="true"></span>
+          <button type="button" id="btnCustomWebNativeDisplay" onclick="customNativeDisplay()" class="btn">Custom Web Native Display</button>
+          <div class="trigger__detail">
+            <p>For the key-value campaign that fills in the cart drop-off card.</p>
+            <code class="payload">Channel: "Custom Web Native Display"</code>
+          </div>
+          <div class="status" aria-live="polite"><label id="divCustomWebNativeDisplay" hidden="hidden">Custom Web Native Display Called</label></div>
+        </li>
+      </ul>
+
+      <div class="targets">
+        <div class="target">
+          <div class="target__head">
+            <h3>Cart drop-off card</h3>
+            <p>Personalized by key-value campaigns with topic &ldquo;Cart drop-off&rdquo;, using the Name and Product keys.</p>
+          </div>
+          <div id="container">
+            <div class="close" aria-hidden="true">&times;</div>
+            <img src="https://img.freepik.com/free-photo/young-gowoman-yellow-leather-jacket-copy-space_23-2148674153.jpg" alt="Woman in a yellow leather jacket"/>
+            <div class="message">
+              <span class="greeting">Hello <span id="user-name">user</span>,</span>
+              <p>Still thinking about the <span id="product-name">item</span> in your cart?</p>
+              <p>We get it - it's fabulous.</p>
+              <p>Use <strong class="coupon">SALE20</strong> and avail 20% off</p>
+              <p>What are you waiting for??</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="target">
+          <div class="target__head">
+            <h3>Banner slot</h3>
+            <p>Banner and carousel campaigns targeting Div ID <code class="chip">web-native-display-container</code> replace this placeholder.</p>
+          </div>
+          <div id="web-native-display-container" class="web-native-display-container">
+            <img class="img-native-display" src="https://static.vecteezy.com/system/resources/thumbnails/002/380/002/small/diagonal-abstract-banner-with-blue-and-purple-template-free-vector.jpg" alt="Placeholder banner"/>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
       function onUserLogin() {
         var identity = document.getElementById("etIdentity").value;
         var name = document.getElementById("etName").value;
@@ -208,6 +767,20 @@ if(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandle
                 });
             }
       </script>
+<script>
+  /* UI-only addition: let keyboard users open the Web Inbox. CleverTap listens
+     for clicks on #inbox-icon, so Enter/Space simply forward a click. */
+  (function () {
+    var inboxIcon = document.getElementById("inbox-icon");
+    if (!inboxIcon) return;
+    inboxIcon.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
+        e.preventDefault();
+        inboxIcon.click();
+      }
+    });
+  })();
+</script>
 <!--<script src="clevertap_sw.js"></script>-->
 <!--<script src="notification_prompt.js"></script> -->
 </body>
